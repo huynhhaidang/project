@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('TechShop - Trang chủ')}"></head>
+<body>
+<div th:replace="~{fragments :: svg-sprite}"></div>
+<div th:replace="~{fragments :: preloader}"></div>
+<div th:replace="~{fragments :: search-box}"></div>
+<div th:replace="~{fragments :: header}"></div>
+
+<section id="intro" class="cs-hero">
+  <div class="container-lg">
+    <div class="row g-3">
+      <div class="col-lg-8">
+        <div class="swiper main-swiper hero-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide" th:each="p : ${heroProducts}">
+              <div class="hero-card">
+                <img th:src="${p.imageUrl}" alt="hero" class="hero-image">
+                <div class="hero-content">
+                  <span class="hero-badge">Deal hot</span>
+                  <h2 th:text="${p.name}">Sản phẩm</h2>
+                  <p class="hero-price" th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</p>
+                  <a th:href="@{/products/{id}(id=${p.id})}" class="btn btn-red">Xem ngay</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination position-absolute"></div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="hero-side">
+          <div class="hero-side-card" th:each="p,stat : ${heroProducts}" th:if="${stat.index == 1 || stat.index == 2}">
+            <img th:src="${p.imageUrl}" alt="banner" class="hero-side-image">
+            <div class="hero-side-content">
+              <span class="hero-side-kicker">Ưu đãi hôm nay</span>
+              <h3 th:text="${p.name}">Sản phẩm</h3>
+              <a th:href="@{/products/{id}(id=${p.id})}">Mua ngay</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-services">
+  <div class="container-lg">
+    <div class="cs-service-grid">
+      <div class="cs-service-item">
+        <span class="cs-service-title">Giao nhanh 2h</span>
+        <p>Áp dụng nội thành</p>
+      </div>
+      <div class="cs-service-item">
+        <span class="cs-service-title">Bảo hành 12 tháng</span>
+        <p>Chính hãng toàn quốc</p>
+      </div>
+      <div class="cs-service-item">
+        <span class="cs-service-title">Thu cũ đổi mới</span>
+        <p>Trợ giá lên đến 3 triệu</p>
+      </div>
+      <div class="cs-service-item">
+        <span class="cs-service-title">Trả góp 0%</span>
+        <p>Hỗ trợ nhanh online</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-quick-cats" th:if="${categories != null}">
+  <div class="container-lg">
+    <div class="cs-quick-title">
+      <h2>Danh mục nổi bật</h2>
+      <span>Chọn nhanh theo nhu cầu</span>
+    </div>
+    <div class="cs-quick-grid">
+      <a class="cs-quick-item" th:each="c : ${categories}" th:href="@{/products(category=${c.name})}">
+        <div class="cs-quick-icon" th:text="${#strings.substring(c.name,0,1)}">D</div>
+        <div class="cs-quick-name" th:text="${c.name}">Danh mục</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="cs-categories" th:if="${collectionSections != null and !collectionSections.isEmpty()}">
+  <div class="container-lg">
+    <div class="display-header d-flex align-items-center justify-content-between mb-3">
+      <h2 class="section-title text-uppercase">Danh mục nổi bật</h2>
+      <a th:href="@{/products}" class="link-more">Xem tất cả</a>
+    </div>
+    <div class="row g-3">
+      <div class="col-lg-4 col-md-6" th:each="section, stat : ${collectionSections}" th:if="${stat.index < 3}">
+        <a class="cs-category-card" th:href="@{/products(category=${section.name})}">
+          <div class="cs-category-content">
+            <span class="cs-category-label">Khám phá</span>
+            <h3 th:text="${section.name}">Danh mục</h3>
+            <span class="cs-category-cta">Mua ngay</span>
+          </div>
+          <img th:if="${!section.products.isEmpty()}" th:src="${section.products.get(0).imageUrl}" alt="category">
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-deal-banner">
+  <div class="container-lg">
+    <div class="cs-deal-inner">
+      <div>
+        <h2>Ưu đãi thành viên TechShop</h2>
+        <p>Đăng ký nhận voucher và cập nhật deal hot mỗi ngày.</p>
+      </div>
+      <div class="cs-deal-actions">
+        <a href="#" class="btn btn-red">Đăng ký ngay</a>
+        <a href="#" class="btn btn-outline-gray">Xem ưu đãi</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-flash-sale" th:if="${sections != null and !sections.isEmpty()}" th:with="flash=${sections.get(0)}">
+  <div class="container-md">
+    <div class="display-header d-flex align-items-center justify-content-between">
+      <div>
+        <h2 class="section-title text-uppercase">Flash sale hôm nay</h2>
+        <p class="text-muted m-0">Số lượng giới hạn, ưu tiên đặt sớm</p>
+      </div>
+      <a class="link-more" th:href="@{/products(category=${flash.name})}">Xem tất cả</a>
+    </div>
+    <div class="product-content padding-small">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5">
+        <div class="col mb-4" th:each="p,stat : ${flash.products}" th:if="${stat.index < 5}">
+          <div class="product-card position-relative">
+            <div class="card-img">
+              <img th:src="${p.imageUrl}" alt="product-item" class="product-image img-fluid">
+            </div>
+            <div class="card-detail d-flex justify-content-between align-items-center mt-3">
+              <h3 class="card-title fs-6 fw-normal m-0">
+                <a th:href="@{/products/{id}(id=${p.id})}" th:text="${p.name}">Tên</a>
+              </h3>
+              <span class="card-price fw-bold" th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="featured-products" class="product-store" th:if="${sections != null and !sections.isEmpty()}">
+  <div class="container-md">
+    <div class="category-block" th:each="section : ${sections}">
+      <div class="display-header d-flex align-items-center justify-content-between">
+        <h2 class="section-title text-uppercase" th:text="${section.name}">Danh mục</h2>
+        <div class="btn-right">
+        <a th:href="@{/products(category=${section.name})}" class="d-inline-block text-uppercase text-hover fw-bold">Xem tất cả</a>
+        </div>
+      </div>
+      <div class="product-content padding-small">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5">
+          <div class="col mb-4" th:each="p : ${section.products}">
+            <div class="product-card position-relative">
+              <div class="card-img">
+                <img th:src="${p.imageUrl}" alt="product-item" class="product-image img-fluid">
+                <div class="cart-concern position-absolute d-flex justify-content-center">
+                  <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
+                    <form th:if="${p.stock > 0 && p.active}" th:action="@{/cart/add/{id}(id=${p.id})}" method="post">
+                      <button type="submit" class="btn btn-light">
+                        <svg class="shopping-carriage"><use xlink:href="#shopping-carriage"></use></svg>
+                      </button>
+                    </form>
+                    <a class="btn btn-light" th:href="@{/products/{id}(id=${p.id})}">
+                      <svg class="quick-view"><use xlink:href="#quick-view"></use></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="card-detail d-flex justify-content-between align-items-center mt-3">
+                <h3 class="card-title fs-6 fw-normal m-0">
+                  <a th:href="@{/products/{id}(id=${p.id})}" th:text="${p.name}">Tên</a>
+                </h3>
+                <span class="card-price fw-bold" th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+              </div>
+              <div class="text-muted small" th:if="${p.stock == 0 || !p.active}">Hết hàng</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-banners">
+  <div class="container-lg">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="cs-banner-card">
+          <div>
+            <span>Combo phụ kiện</span>
+            <h3>Giảm thêm 10% khi mua kèm</h3>
+            <a th:href="@{/products(category='Phụ kiện')}" class="link-more">Xem ngay</a>
+          </div>
+          <img th:src="@{/theme/images/collection-item1.jpg}" alt="banner">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="cs-banner-card">
+          <div>
+            <span>Học tập - văn phòng</span>
+            <h3>Laptop mỏng nhẹ, pin trâu</h3>
+            <a th:href="@{/products(category='Laptop')}" class="link-more">Khám phá</a>
+          </div>
+          <img th:src="@{/theme/images/collection-item2.jpg}" alt="banner">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

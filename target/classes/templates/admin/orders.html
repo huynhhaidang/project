@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Quản trị đơn hàng')}"></head>
+<body class="admin-body">
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <img th:src="@{/theme/images/main-logo.png}" alt="TechShop" class="logo">
+            <div>
+                <div>TechShop</div>
+                <small>Admin Panel</small>
+            </div>
+        </div>
+        <nav class="admin-nav">
+            <a th:href="@{/admin}">Bảng điều khiển</a>
+            <a th:href="@{/admin/products}">Sản phẩm</a>
+            <a th:href="@{/admin/categories}">Danh mục</a>
+            <a th:href="@{/admin/orders}">Đơn hàng</a>
+            <a th:href="@{/admin/users}">Người dùng</a>
+            <a th:href="@{/}">Về trang chủ</a>
+        </nav>
+    </aside>
+    <div class="admin-content">
+        <div class="admin-topbar">
+            <div>
+                <h1>Quản trị đơn hàng</h1>
+                <div class="text-muted">Theo dõi và cập nhật trạng thái giao hàng</div>
+            </div>
+        </div>
+
+    <form class="row g-2 align-items-center mb-3" method="get" th:action="@{/admin/orders}">
+        <div class="col-md-6">
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="Tên khách hàng..." class="form-control">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-black w-100">Lọc</button>
+        </div>
+    </form>
+
+    <div class="order" th:each="o : ${orders}">
+        <div class="order-header">
+            <div><strong>Mã:</strong> <span th:text="${o.id}"></span></div>
+            <div><strong>Khách:</strong> <span th:text="${o.fullName}"></span></div>
+            <div><strong>Ngày:</strong> <span th:text="${#temporals.format(o.createdAt, 'dd/MM/yyyy HH:mm')}"></span></div>
+            <div>
+                <strong>Thanh toán:</strong>
+                <span th:text="${o.paymentMethod == 'PAYPAL' ? 'PayPal' : 'COD'}"></span>
+                <span class="ms-2" th:text="${o.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}"></span>
+            </div>
+        </div>
+        <div class="order-items">
+            <div class="order-item" th:each="item : ${o.items}">
+                <span th:text="${item.name} + ' x' + ${item.quantity}"></span>
+                <span th:text="${#numbers.formatDecimal(item.total, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+            </div>
+        </div>
+        <div class="order-total">
+            <strong>Tổng cộng:</strong>
+            <strong th:text="${#numbers.formatDecimal(o.total, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+        </div>
+        <div class="order-actions mt-2 d-flex gap-2 flex-wrap">
+            <a class="btn btn-outline-gray btn-sm" th:href="@{/admin/orders/{id}(id=${o.id})}">Chi tiết</a>
+            <form th:action="@{/admin/orders/{id}/status(id=${o.id})}" method="post" class="d-flex gap-2">
+                <select name="status" class="form-select">
+                    <option th:each="s : ${statuses}" th:value="${s}" th:selected="${s == o.status}" th:text="${s}"></option>
+                </select>
+                <button type="submit" class="btn btn-black btn-sm">Cập nhật trạng thái</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="pagination" th:if="${page != null}">
+        <a class="btn btn-outline-gray btn-sm" th:if="${page.hasPrevious()}"
+           th:href="@{/admin/orders(page=${page.number - 1}, keyword=${keyword})}">Trước</a>
+        <span>Trang <strong th:text="${page.number + 1}"></strong> / <span th:text="${page.totalPages}"></span></span>
+        <a class="btn btn-outline-gray btn-sm" th:if="${page.hasNext()}"
+           th:href="@{/admin/orders(page=${page.number + 1}, keyword=${keyword})}">Sau</a>
+    </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

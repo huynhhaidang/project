@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Quản trị người dùng')}"></head>
+<body class="admin-body">
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <img th:src="@{/theme/images/main-logo.png}" alt="TechShop" class="logo">
+            <div>
+                <div>TechShop</div>
+                <small>Admin Panel</small>
+            </div>
+        </div>
+        <nav class="admin-nav">
+            <a th:href="@{/admin}">Bảng điều khiển</a>
+            <a th:href="@{/admin/products}">Sản phẩm</a>
+            <a th:href="@{/admin/categories}">Danh mục</a>
+            <a th:href="@{/admin/orders}">Đơn hàng</a>
+            <a th:href="@{/admin/users}">Người dùng</a>
+            <a th:href="@{/}">Về trang chủ</a>
+        </nav>
+    </aside>
+    <div class="admin-content">
+        <div class="admin-topbar">
+            <div>
+                <h1>Quản trị người dùng</h1>
+                <div class="text-muted">Phân quyền và trạng thái tài khoản</div>
+            </div>
+            <a class="btn btn-red" th:href="@{/admin/users/new}">Thêm người dùng</a>
+        </div>
+
+    <form class="row g-2 align-items-center mb-3" method="get" th:action="@{/admin/users}">
+        <div class="col-md-6">
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="Tên hoặc tài khoản..." class="form-control">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-black w-100">Lọc</button>
+        </div>
+    </form>
+
+    <div class="table-responsive admin-table">
+      <table class="table">
+          <thead>
+          <tr>
+              <th>Tài khoản</th>
+              <th>Họ tên</th>
+              <th>Điện thoại</th>
+              <th>Email</th>
+              <th>Vai trò</th>
+              <th>Trạng thái</th>
+              <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="u : ${users}">
+              <td th:text="${u.username}">username</td>
+              <td th:text="${u.fullName}">name</td>
+              <td th:text="${u.phone}">phone</td>
+              <td th:text="${u.email}">email</td>
+              <td th:text="${u.role}">ROLE_USER</td>
+              <td th:text="${u.enabled ? 'Hoạt động' : 'Bị khóa'}">Hoạt động</td>
+              <td>
+                  <a class="btn btn-outline-gray btn-sm" th:href="@{/admin/users/{id}/edit(id=${u.id})}">Sửa</a>
+                  <form th:action="@{/admin/users/{id}/delete(id=${u.id})}" method="post" class="d-inline">
+                      <button type="submit" class="btn btn-outline-gray btn-sm">Xóa</button>
+                  </form>
+              </td>
+          </tr>
+          </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" th:if="${page != null}">
+        <a class="btn btn-outline-gray btn-sm" th:if="${page.hasPrevious()}"
+           th:href="@{/admin/users(page=${page.number - 1}, keyword=${keyword})}">Trước</a>
+        <span>Trang <strong th:text="${page.number + 1}"></strong> / <span th:text="${page.totalPages}"></span></span>
+        <a class="btn btn-outline-gray btn-sm" th:if="${page.hasNext()}"
+           th:href="@{/admin/users(page=${page.number + 1}, keyword=${keyword})}">Sau</a>
+    </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

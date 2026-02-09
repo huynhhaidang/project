@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Chi tiết đơn hàng')}"></head>
+<body>
+<div th:replace="~{fragments :: svg-sprite}"></div>
+<div th:replace="~{fragments :: preloader}"></div>
+<div th:replace="~{fragments :: search-box}"></div>
+<div th:replace="~{fragments :: header}"></div>
+
+<section class="py-4">
+  <div class="container-lg">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h1>Chi tiết đơn hàng</h1>
+        <p class="text-muted m-0">Thông tin đơn hàng của bạn</p>
+      </div>
+      <a class="btn btn-outline-gray" th:href="@{/orders}">Quay lại</a>
+    </div>
+
+    <div class="cs-order-detail">
+      <div class="cs-order-detail-head">
+        <div>
+          <h3 th:text="'Đơn hàng #' + ${order.id}">Đơn hàng</h3>
+          <p class="text-muted mb-0" th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></p>
+        </div>
+        <div class="cs-order-status">
+          <span class="cs-status" th:text="${order.status}">TRẠNG THÁI</span>
+          <span class="cs-pay" th:text="${order.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}"></span>
+        </div>
+      </div>
+      <div class="cs-order-detail-grid">
+        <div class="cs-order-detail-card">
+          <h5>Thông tin giao hàng</h5>
+          <p><strong>Người nhận:</strong> <span th:text="${order.fullName}"></span></p>
+          <p><strong>SĐT:</strong> <span th:text="${order.phone}"></span></p>
+          <p><strong>Email:</strong> <span th:text="${order.email}"></span></p>
+          <p><strong>Địa chỉ:</strong> <span th:text="${order.shippingAddress}"></span></p>
+        </div>
+        <div class="cs-order-detail-card">
+          <h5>Thanh toán</h5>
+          <p><strong>Phương thức:</strong> <span th:text="${order.paymentMethod == 'PAYPAL' ? 'PayPal' : 'COD'}"></span></p>
+          <p><strong>Trạng thái:</strong> <span th:text="${order.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}"></span></p>
+          <p th:if="${order.paidAt != null}"><strong>Thời gian:</strong> <span th:text="${#temporals.format(order.paidAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+        </div>
+      </div>
+      <div class="cs-order-items">
+        <div class="cs-order-item" th:each="item : ${order.items}">
+          <span th:text="${item.name} + ' x' + ${item.quantity}"></span>
+          <strong th:text="${#numbers.formatDecimal(item.total, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+        </div>
+      </div>
+      <div class="cs-order-total">
+        <span>Tổng cộng</span>
+        <strong th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

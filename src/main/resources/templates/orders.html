@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Đơn hàng của tôi')}"></head>
+<body>
+<div th:replace="~{fragments :: svg-sprite}"></div>
+<div th:replace="~{fragments :: preloader}"></div>
+<div th:replace="~{fragments :: search-box}"></div>
+<div th:replace="~{fragments :: header}"></div>
+
+<section class="py-4">
+  <div class="container-lg">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h1>Đơn hàng của tôi</h1>
+        <p class="text-muted m-0">Theo dõi trạng thái đơn hàng và thanh toán</p>
+      </div>
+      <a class="btn btn-outline-gray" th:href="@{/products}">Mua thêm</a>
+    </div>
+
+    <div th:if="${orders.size() == 0}" class="alert">Bạn chưa có đơn hàng nào.</div>
+
+    <div class="cs-order-card" th:each="o : ${orders}">
+      <div class="cs-order-head">
+        <div>
+          <h5 th:text="'Đơn #' + ${o.id}">Đơn</h5>
+          <span class="text-muted" th:text="${#temporals.format(o.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+        </div>
+        <div class="cs-order-status">
+          <span class="cs-status" th:text="${o.status}">TRẠNG THÁI</span>
+          <span class="cs-pay" th:text="${o.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}"></span>
+        </div>
+      </div>
+      <div class="cs-order-body">
+        <div class="cs-order-items">
+          <div class="cs-order-item" th:each="item : ${o.items}">
+            <span th:text="${item.name} + ' x' + ${item.quantity}"></span>
+            <strong th:text="${#numbers.formatDecimal(item.total, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+          </div>
+        </div>
+        <div class="cs-order-summary">
+          <div><span>Thanh toán</span> <strong th:text="${o.paymentMethod == 'PAYPAL' ? 'PayPal' : 'COD'}"></strong></div>
+          <div><span>Tổng cộng</span> <strong th:text="${#numbers.formatDecimal(o.total, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong></div>
+          <a class="btn btn-red btn-sm mt-2" th:href="@{/orders/{id}(id=${o.id})}">Xem chi tiết</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>
