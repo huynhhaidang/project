@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Chi tiết đơn hàng')}"></head>
+<body class="admin-body">
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <img th:src="@{/theme/images/main-logo.png}" alt="TechShop" class="logo">
+            <div>
+                <div>TechShop</div>
+                <small>Admin Panel</small>
+            </div>
+        </div>
+        <nav class="admin-nav">
+            <a th:href="@{/admin}">Bảng điều khiển</a>
+            <a th:href="@{/admin/products}">Sản phẩm</a>
+            <a th:href="@{/admin/categories}">Danh mục</a>
+            <a th:href="@{/admin/orders}">Đơn hàng</a>
+            <a th:href="@{/admin/users}">Người dùng</a>
+            <a th:href="@{/}">Về trang chủ</a>
+        </nav>
+    </aside>
+    <div class="admin-content">
+        <div class="admin-topbar">
+            <div>
+                <h1>Chi tiết đơn hàng</h1>
+                <div class="text-muted">Thông tin khách hàng và sản phẩm</div>
+            </div>
+            <a class="btn btn-outline-gray" th:href="@{/admin/orders}">Quay lại</a>
+        </div>
+
+    <div class="order">
+        <div class="order-header">
+            <div><strong>Mã:</strong> <span th:text="${order.id}"></span></div>
+            <div><strong>Khách:</strong> <span th:text="${order.fullName}"></span></div>
+            <div><strong>SĐT:</strong> <span th:text="${order.phone}"></span></div>
+            <div><strong>Email:</strong> <span th:text="${order.email}"></span></div>
+            <div><strong>Địa chỉ:</strong> <span th:text="${order.shippingAddress}"></span></div>
+            <div><strong>Trạng thái:</strong> <span th:text="${order.status}"></span></div>
+            <div>
+                <strong>Thanh toán:</strong>
+                <span th:text="${order.paymentMethod == 'PAYPAL' ? 'PayPal' : 'COD'}"></span>
+                <span class="ms-2" th:text="${order.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}"></span>
+            </div>
+            <div th:if="${order.paid}">
+                <strong>Thời gian thanh toán:</strong>
+                <span th:text="${#temporals.format(order.paidAt, 'dd/MM/yyyy HH:mm')}"></span>
+            </div>
+        </div>
+        <div class="order-items">
+            <div class="order-item" th:each="item : ${order.items}">
+                <span th:text="${item.name} + ' x' + ${item.quantity}"></span>
+                <span th:text="${#numbers.formatDecimal(item.total, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+            </div>
+        </div>
+        <div class="order-total">
+            <strong>Tổng cộng:</strong>
+            <strong th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+        </div>
+        <div class="order-actions mt-3" th:if="${order.paymentMethod == 'PAYPAL'}">
+            <form th:action="@{/admin/orders/{id}/paid(id=${order.id})}" method="post" class="d-flex gap-2">
+                <input type="hidden" name="paid" th:value="${!order.paid}">
+                <button type="submit" class="btn btn-black btn-sm" th:text="${order.paid ? 'Đánh dấu chưa thanh toán' : 'Đánh dấu đã thanh toán'}"></button>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

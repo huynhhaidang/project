@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Chatbot hỗ trợ')}"></head>
+<body>
+<div th:replace="~{fragments :: svg-sprite}"></div>
+<div th:replace="~{fragments :: preloader}"></div>
+<div th:replace="~{fragments :: search-box}"></div>
+<div th:replace="~{fragments :: header}"></div>
+
+<section class="py-5">
+  <div class="container-lg">
+    <div class="auth-card">
+      <h1>Chatbot hỗ trợ khách hàng</h1>
+
+      <div class="chat-box">
+        <div class="chat-line" th:each="line : ${session.chatHistory}" th:text="${line}"></div>
+      </div>
+
+      <form th:action="@{/chatbot}" method="post">
+        <label>Bạn cần hỗ trợ gì?</label>
+        <input type="text" name="message" class="form-control" placeholder="Nhập câu hỏi..." required>
+        <button type="submit" class="btn btn-red mt-3">Gửi</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

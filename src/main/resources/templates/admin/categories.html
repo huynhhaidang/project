@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Quản trị danh mục')}"></head>
+<body class="admin-body">
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <img th:src="@{/theme/images/main-logo.png}" alt="TechShop" class="logo">
+            <div>
+                <div>TechShop</div>
+                <small>Admin Panel</small>
+            </div>
+        </div>
+        <nav class="admin-nav">
+            <a th:href="@{/admin}">Bảng điều khiển</a>
+            <a th:href="@{/admin/products}">Sản phẩm</a>
+            <a th:href="@{/admin/categories}">Danh mục</a>
+            <a th:href="@{/admin/orders}">Đơn hàng</a>
+            <a th:href="@{/admin/users}">Người dùng</a>
+            <a th:href="@{/}">Về trang chủ</a>
+        </nav>
+    </aside>
+    <div class="admin-content">
+        <div class="admin-topbar">
+            <div>
+                <h1>Quản trị danh mục</h1>
+                <div class="text-muted">Quản lý nhóm sản phẩm và mô tả</div>
+            </div>
+            <a class="btn btn-red" th:href="@{/admin/categories/new}">Thêm danh mục</a>
+        </div>
+
+    <form class="row g-2 align-items-center mb-3" method="get" th:action="@{/admin/categories}">
+        <div class="col-md-6">
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="Tên danh mục..." class="form-control">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-black w-100">Lọc</button>
+        </div>
+    </form>
+
+    <div class="alert" th:if="${param.error}">Không thể xóa danh mục vì đang có sản phẩm thuộc danh mục này.</div>
+
+    <div class="table-responsive admin-table">
+      <table class="table">
+          <thead>
+          <tr>
+              <th>Tên</th>
+              <th>Mô tả</th>
+              <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="c : ${categories}">
+              <td th:text="${c.name}">Tên</td>
+              <td th:text="${c.description}">Mô tả</td>
+              <td>
+                  <a class="btn btn-outline-gray btn-sm" th:href="@{/admin/categories/{id}/edit(id=${c.id})}">Sửa</a>
+                  <form th:action="@{/admin/categories/{id}/delete(id=${c.id})}" method="post" class="d-inline">
+                      <button type="submit" class="btn btn-outline-gray btn-sm">Xóa</button>
+                  </form>
+              </td>
+          </tr>
+          </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" th:if="${page != null}">
+        <a class="btn btn-outline-gray btn-sm" th:if="${page.hasPrevious()}"
+           th:href="@{/admin/categories(page=${page.number - 1}, keyword=${keyword})}">Trước</a>
+        <span>Trang <strong th:text="${page.number + 1}"></strong> / <span th:text="${page.totalPages}"></span></span>
+        <a class="btn btn-outline-gray btn-sm" th:if="${page.hasNext()}"
+           th:href="@{/admin/categories(page=${page.number + 1}, keyword=${keyword})}">Sau</a>
+    </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

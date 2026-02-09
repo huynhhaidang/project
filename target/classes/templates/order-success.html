@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Đặt hàng thành công')}"></head>
+<body>
+<div th:replace="~{fragments :: svg-sprite}"></div>
+<div th:replace="~{fragments :: preloader}"></div>
+<div th:replace="~{fragments :: search-box}"></div>
+<div th:replace="~{fragments :: header}"></div>
+
+<section class="py-5">
+  <div class="container-lg">
+    <div class="auth-card text-center">
+      <h1>Đặt hàng thành công</h1>
+      <p>Cảm ơn bạn đã mua hàng. Mã đơn hàng:</p>
+      <div class="order-code" th:text="${order.id}">ORDER_ID</div>
+      <p>Trạng thái: <strong th:text="${order.status}">Chờ xử lý</strong></p>
+      <p>Thanh toán: <strong th:text="${order.paymentMethod == 'PAYPAL' ? 'PayPal' : 'COD'}"></strong> -
+        <strong th:text="${order.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}"></strong></p>
+      <a class="btn btn-red" th:href="@{/orders}">Xem đơn hàng</a>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

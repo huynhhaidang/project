@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head(${product.name})}"></head>
+<body>
+<div th:replace="~{fragments :: svg-sprite}"></div>
+<div th:replace="~{fragments :: preloader}"></div>
+<div th:replace="~{fragments :: search-box}"></div>
+<div th:replace="~{fragments :: header}"></div>
+
+<section class="py-4">
+  <div class="container-lg">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="cs-product-gallery">
+          <img class="product-detail-image" th:src="${product.imageUrl}" alt="Product">
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="cs-product-summary">
+          <span class="cs-product-brand" th:text="${product.brand}">Hãng</span>
+          <h1 th:text="${product.name}">Tên sản phẩm</h1>
+          <div class="cs-product-price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+          <div class="cs-product-badges">
+            <span>Bảo hành 12 tháng</span>
+            <span>Trả góp 0%</span>
+            <span>Thu cũ đổi mới</span>
+          </div>
+          <p class="cs-product-desc" th:text="${product.description}">Mô tả</p>
+          <div class="cs-product-actions">
+            <form th:if="${product.stock > 0 && product.active}" th:action="@{/cart/add/{id}(id=${product.id})}" method="post" class="cs-buy-form">
+              <label>Số lượng</label>
+              <div class="cs-qty-box">
+                <input type="number" name="quantity" min="1" value="1">
+                <button type="submit">Thêm vào giỏ</button>
+              </div>
+            </form>
+            <a class="btn btn-red" th:href="@{/checkout}">Mua ngay</a>
+          </div>
+          <div class="text-muted mt-2" th:if="${product.stock == 0 || !product.active}">Sản phẩm hiện không khả dụng</div>
+          <div class="cs-product-note">
+            <span>Miễn phí giao hàng cho đơn từ 1.000.000đ</span>
+            <span>Đổi trả trong 7 ngày</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

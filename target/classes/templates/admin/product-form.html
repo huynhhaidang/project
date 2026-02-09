@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Sản phẩm')}"></head>
+<body class="admin-body">
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <img th:src="@{/theme/images/main-logo.png}" alt="TechShop" class="logo">
+            <div>
+                <div>TechShop</div>
+                <small>Admin Panel</small>
+            </div>
+        </div>
+        <nav class="admin-nav">
+            <a th:href="@{/admin}">Bảng điều khiển</a>
+            <a th:href="@{/admin/products}">Sản phẩm</a>
+            <a th:href="@{/admin/categories}">Danh mục</a>
+            <a th:href="@{/admin/orders}">Đơn hàng</a>
+            <a th:href="@{/admin/users}">Người dùng</a>
+            <a th:href="@{/}">Về trang chủ</a>
+        </nav>
+    </aside>
+    <div class="admin-content">
+        <div class="admin-topbar">
+            <div>
+                <h1 th:text="${productId != null ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}">Sản phẩm</h1>
+                <div class="text-muted">Cập nhật thông tin sản phẩm</div>
+            </div>
+            <a class="btn btn-outline-gray" th:href="@{/admin/products}">Quay lại</a>
+        </div>
+
+    <form th:action="${productId != null ? '/admin/products/' + productId : '/admin/products'}" method="post"
+          th:object="${productForm}" class="auth-card">
+        <label>Tên sản phẩm</label>
+        <input type="text" th:field="*{name}" class="form-control" required>
+        <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
+        <label class="mt-3">Hãng</label>
+        <input type="text" th:field="*{brand}" class="form-control" required>
+        <div class="error" th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}"></div>
+
+        <label class="mt-3">Danh mục</label>
+        <select th:field="*{categoryName}" class="form-select" required>
+            <option th:each="c : ${categories}" th:value="${c.name}" th:text="${c.name}"></option>
+        </select>
+        <div class="error" th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}"></div>
+
+        <label class="mt-3">Giá</label>
+        <input type="number" th:field="*{price}" min="0" class="form-control" required>
+        <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+
+        <label class="mt-3">Tồn kho</label>
+        <input type="number" th:field="*{stock}" min="0" class="form-control" required>
+        <div class="error" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+
+        <label class="mt-3">Trạng thái</label>
+        <select th:field="*{active}" class="form-select">
+            <option value="true">Đang bán</option>
+            <option value="false">Ngừng bán</option>
+        </select>
+
+        <label class="mt-3">Ảnh (URL)</label>
+        <input type="text" th:field="*{imageUrl}" class="form-control" required>
+        <div class="error" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></div>
+
+        <label class="mt-3">Mô tả</label>
+        <textarea th:field="*{description}" rows="4" class="form-control" required></textarea>
+        <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+
+        <button type="submit" class="btn btn-red mt-3">Lưu</button>
+    </form>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>

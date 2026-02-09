@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{fragments :: head('Hồ sơ cá nhân')}"></head>
+<body>
+<div th:replace="~{fragments :: svg-sprite}"></div>
+<div th:replace="~{fragments :: preloader}"></div>
+<div th:replace="~{fragments :: search-box}"></div>
+<div th:replace="~{fragments :: header}"></div>
+
+<section class="py-5">
+  <div class="container-lg">
+    <div class="auth-card">
+      <h1>Hồ sơ cá nhân</h1>
+      <div class="alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+      <form th:action="@{/profile}" method="post" th:object="${profileForm}" class="mt-3">
+        <label>Họ tên</label>
+        <input type="text" th:field="*{fullName}" class="form-control" required>
+        <div class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+
+        <label class="mt-3">Số điện thoại</label>
+        <input type="text" th:field="*{phone}" class="form-control" required>
+        <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+
+        <label class="mt-3">Email</label>
+        <input type="email" th:field="*{email}" class="form-control" required>
+        <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+        <label class="mt-3">Địa chỉ mặc định</label>
+        <textarea th:field="*{shippingAddress}" rows="3" class="form-control" required></textarea>
+        <div class="error" th:if="${#fields.hasErrors('shippingAddress')}" th:errors="*{shippingAddress}"></div>
+
+        <button type="submit" class="btn btn-red mt-3">Lưu thay đổi</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: footer-scripts}"></div>
+</body>
+</html>
